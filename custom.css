@@ -1,0 +1,37 @@
+.reveal .title {
+  font-size: 250% !important;
+  font-weight: 400;
+}
+
+.reveal h3 {
+  font-size: var(--r-heading3-size);
+  font-size: 122% !important;
+  color: cadetblue;
+  padding-top: 12px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.up {
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.gyptis {
+  background-image: url("https://gyptis.gitlab.io/_assets/gyptis.svg");
+  background-repeat: no-repeat;
+  height: 220px;
+}
+
+.slide.hide-title h2 {
+  display: none;
+}
+
+.slide.hide-title h1 {
+  display: none;
+}
+
+
+figcaption {
+  text-align: center;
+}

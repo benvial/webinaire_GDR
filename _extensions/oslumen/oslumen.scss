@@ -1,0 +1,159 @@
+/*-- scss:defaults --*/
+
+/**
+ * oslumen theme for reveal.js, adapted from the Myplanet and NORMENT themes
+*/
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Audiowide&display=swap');
+
+/*-- scss:defaults --*/
+
+// Audiowide
+
+// fonts
+$font-family-monospace: 'Red Hat Mono', monospace;
+$font-family: 'DM Sans', sans-serif;
+$code-block-font-size: 0.6em;
+
+// colours
+$body-bg: #ffffff;
+$body-color: #343131;
+$primary-color: #A04747;
+$secondary-color: #D8A25E;
+$ternary-color: #EEDF7A;
+$light-color: #f5f5f5;
+$green: #3d7f7a;
+$blue: #0C5DA5;
+$purple: #845B97;
+
+
+.reveal pre.sourceCode code {
+  background-color: $light-color !important;
+}
+
+
+$link-color: $primary-color;
+$code-block-bg: $body-bg;
+$code-block-border-color: $body-bg;
+$tabset-border-color: $body-color;
+$title-color: $primary-color;
+
+
+/*-- scss:rules --*/
+
+.reveal .title {
+  font-family: 'DM Sans', sans-serif;
+  color: $title-color;
+  font-size: 300% !important;
+  font-weight: 800;
+  padding-bottom: 1.3em;
+}
+
+a {
+  color: $secondary-color !important;
+}
+
+a[id^='tabby-toggle_tabset'] {
+  color: $light-color !important;
+}
+
+.reveal .subtitle {
+  font-family: 'DM Sans', sans-serif;
+  color: #343434;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.reveal .acknowledgement {
+  font-family: 'DM Sans', sans-serif;
+  color: $title-color;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.v-center-container {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+}
+
+.reveal pre code {
+  color: lighten($body-color, 10%);
+}
+
+.reveal h2,
+.reveal .slides section.smaller h2 {
+  font-family: 'DM Sans', sans-serif;
+  color: $title-color;
+  font-weight: 800;
+  font-size: 170% !important;
+  text-transform: uppercase;
+  padding-bottom: 1em;
+}
+
+
+
+
+.reveal h4 {
+  font-family: 'DM Sans', sans-serif;
+  color: #273b50;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.reveal .final {
+  font-family: 'DM Sans', sans-serif;
+  color: #273b50;
+  font-weight: 400;
+  font-size: 1em;
+}
+
+.reveal .links {
+  font-family: 'Red Hat Mono', monospace;
+  font-weight: 200;
+  font-size: 1.5em;
+}
+
+.panel-tabset-tabby {
+  border-color: $body-bg !important;
+}
+
+.panel-tabset-tabby a {
+  color: $body-bg;
+  font-family: 'Red Hat Mono', monospace;
+  font-weight: 400;
+  font-size: 0.7em;
+  background-color: $link-color;
+  border-radius: 15px 15px 0 0;
+  border-bottom-color: $body-color;
+}
+
+.panel-tabset [role=tab][aria-selected=true] {
+  background-color: $body-color;
+  border-bottom-color: $body-color;
+}
+
+// .slide-background-content::before {
+//   content: "";
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;  
+//   background: rgba(255, 255, 255, 0.23);
+//   z-index: 1;
+// }
+
+.reveal div.sourceCode {
+  padding: 24px 42px 24px 0;
+  max-width: 75%;
+  min-width: 50%;
+  width: fit-content;
+  margin-bottom: 24px;
+}
+
+
+
+// .reveal.has-dark-background .slide-logo {
+//   display: none !important;
+// }

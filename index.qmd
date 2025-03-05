@@ -1,0 +1,690 @@
+---
+title: |
+    Optimization of Photonic Devices:
+    Implementation of Auto-Differentiable
+    Numerical Methods 
+    in Open-Source Software
+
+subtitle: "Séminaire GDR Ondes"
+author: 
+  name: Benjamin Vial 
+  affiliations: Imperial College London
+  email: b.vial@imperial.ac.uk
+format:  oslumen-revealjs+simple
+# include-after-body: custom.js
+title-slide-attributes:
+  data-background-image: "fig/bg.svg"
+bibliography: references.bib
+css: ["custom.css"]
+---
+
+# Introduction {data-background-color=var(--quarto-scss-export-green)}
+## Introduction
+
+
+
+<div style="display: none;">
+$$
+\usepackage{amsmath,amssymb}
+\newcommand{\e}{\varepsilon}
+\newcommand{\exx}{\e_{xx}}
+\newcommand{\eyy}{\e_{yy}}
+\newcommand{\ea}{\e_{a}}
+\newcommand{\ezz}{\e_{zz}}
+\newcommand{\exy}{\e_{xy}}
+\newcommand{\eyx}{\e_{yx}}
+\newcommand{\muxx}{\mu_{xx}}
+\newcommand{\muyy}{\mu_{yy}}
+\newcommand{\mua}{\mu_{a}}
+\newcommand{\muzz}{\mu_{zz}}
+\newcommand{\ef}{\e_{\rm f}}
+\newcommand{\ed}{\e_{\rm d}}
+\newcommand{\tdf}{\tan \delta_{\rm f}}
+\newcommand{\td}{\tan \delta}
+\newcommand{\Eb}{E_{\rm B}}
+\newcommand{\Em}{\B{\mathcal{E}}}
+\newcommand{\Hm}{{\mathcal{H}}}
+\usepackage{bm}
+\newcommand{\B}[1]{\boldsymbol{#1}}
+\newcommand{\tens}[1]{\B{#1}}
+\newcommand{\re}{\mathrm{Re}\,}
+\newcommand{\im}{\mathrm{Im}\,}
+\newcommand{\grad}{\B{\nabla}}
+\newcommand{\ddiv}{\B{\nabla}\cdotp}
+\newcommand{\curl}{\B{\nabla}\times}
+\newcommand{\dt}{\mathrm{d}}
+\newcommand{\etens}{\tens{\e}}
+\newcommand{\h}[1]{\tilde{#1}}
+\newcommand{\T}[1]{#1^{\rm T}}
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+\newcommand{\bra}{\left\langle}
+\newcommand{\ket}{\right\rangle}
+\newcommand{\mn}[1]{\bra #1 \ket}
+\newcommand{\D}{\partial}
+\newcommand{\dd}{\rm d}
+\newcommand{\der}[2]{\frac{\D #1}{\D #2}}
+\newcommand{\rhof}{\tilde{\rho}}
+\newcommand{\rhop}{\hat{\rho}}
+\newcommand{\matthree}[9]{
+\begin{pmatrix}
+#1 & #2 & #3\\
+#4 & #5 & #6\\
+#7 & #8 & #9
+\end{pmatrix}
+}
+\newcommand{\ehom}{\tilde{\etens}}
+\newcommand{\ezaniso}{\matthree{\exx}{\ea^\star}{0}{\ea}{\eyy}{0}{0}{0}{\ezz}}
+\newcommand{\muzaniso}{\matthree{\muxx}{\mua^\star}{0}{\mua}{\muyy}{0}{0}{0}{\muzz}}
+\newcommand{\LSO}{L^2({{\rm\textbf{curl}}}, \Omega)}
+\newcommand{\rpara}{\B{r_\parallel}}
+\newcommand{\densf}{\tilde{p}}
+\newcommand{\densp}{\hat{p}}
+\newcommand{\exxh}{\h{\e}_{xx}}
+\newcommand{\eyyh}{\h{\e}_{yy}}
+\newcommand{\exyh}{\h{\e}_{xy}}
+\newcommand{\eyxh}{\h{\e}_{yx}}
+\newcommand{\ezzh}{\h{\e}_{zz}}
+\newcommand{\tdhxx}{\tan \h{\delta}_{xx}}
+\newcommand{\tunh}{\h{\eta}}
+$$ 
+</div>
+
+
+
+
+What is topology optimization?
+
+
+> <div style="font-size: 100%;">A mathematical method that optimizes material layout within a given design space, for a given set of sources, boundary conditions and constraints with the goal of maximizing the performance of the system</div>
+
+
+
+## {data-background-image="https://comet-fenics.readthedocs.io/en/latest/_images/cantilever_beam.gif"} 
+
+<div style="font-size: 90%; margin-left: 10%; margin-top: 80vh">Topology optimization `Hello World!`: Maximizing a beam stiffness with fixed volume fraction [@bleyer2018numericaltours]
+</div>
+
+## {data-background-color=black data-background-image="https://static.wixstatic.com/media/1790be_4a51fb50cb784a9da928ac9ef248dc03~mv2.jpg" data-background-opacity=1}
+
+<div style="text-transform: uppercase">Structural Engineering</div>
+<div style="font-size: 70%">Qatar National Convention Centre</div>
+
+
+## {data-background-color=black data-background-image="fig/wing.webp" data-background-opacity=0.5}
+
+<div style="padding-top: 26vh;">
+  <div class="up">Aeronautics</div>
+  <div style="font-size: 70%;">Airplane wing 
+  [@aageGigavoxelComputationalMorphogenesis2017]</div>
+</div>
+
+
+## {data-background-image="fig/history_opt_phot.webp" data-background-opacity=1  data-background-size="90%" data-background-repeat="no-repeat"}
+
+<div style="padding-top:130px;padding-left:30%;">
+<div style=" text-transform: uppercase; color:var(--quarto-scss-export-primary-color);">Photonics</div>
+[@moleskyInverseDesignNanophotonics2018]
+</div>
+
+
+
+## Topology optimization: recipes
+
+::: {.incremental}
+- <div class="up">Density function</div> 
+$p \in [0,1]$: material distribution in design domain $\Omega_{\rm des}$
+- <div class="up">Filtering</div> 
+Convolution: $f(\B r) = \frac{1}{A}{\rm exp}(-|\B r|^2 /R_f^2)$, with $\int_{\Omega_{\rm des}} f(\B r) =1$
+\begin{equation*}
+\densf(\B r)  = p * f = \int_{\Omega_{\rm des}} p(\B r') f(\B r -\B r') {\rm d} \B r'
+\label{eq:gaussian_filt}
+\end{equation*}
+PDE: $-R_f^2 \B\nabla ^2 \densf + \densf = p {\quad\rm on \,}\Omega_{\rm des}, \grad\densf\cdotp\B n = 0 {\quad\rm on \,}\partial\Omega_{\rm des}$
+[@lazarovFiltersTopologyOptimization2011]
+<img src="fig/filter.gif" style="width: 62%; padding-top: 24px;" ></img>
+::: 
+
+## Topology optimization: recipes
+
+::: {.incremental}
+- <div class="up">Projection</div> 
+$$\densp(\densf) = \frac{\tanh\left[\beta\nu\right] + \tanh\left[\beta(\densf-\nu)\right] }{\tanh\left[\beta\nu\right]
+  + \tanh\left[\beta(1-\nu)\right]}$$
+  with $\nu=1/2$ and $\beta>0$ increased during the course of the optimization.
+[@wangProjectionMethodsConvergence2010]
+<img src="fig/proj.gif" style="width: 65%; padding-top: 24px;" ></img>
+
+- <div class="up">Interpolation</div> 
+$\varepsilon(\densp)=(\varepsilon_{\rm max}-\varepsilon_{\rm min})\,\densp^m + \varepsilon_{\rm min}$
+[@bendsoeMaterialInterpolationSchemes1999]
+::: 
+
+
+
+
+## Algorithm
+
+::: columns
+
+:::: {.column width=50% }
+
+
+![](fig/topopt_algo.png){width=80%}
+
+::::
+
+:::: {.column width=50% }
+
+- <div class="up">gradient based optimization algorithm</div> method of moving asymptotes [@svanbergClassGloballyConvergent], free implementation via the `nlopt` package [@johnsonNLoptNonlinearoptimizationPackage]
+- 40 iterations or until convergence on the objective or
+design variables
+-  repeated setting $\beta =2^n$, where $n$ is an integer between 0 and 7,
+restarting the algorithm with the optimized density obtained at the
+previous step
+
+
+![](fig/opt_landscape.png){width=80%}
+
+::::
+
+:::
+
+
+
+# Computing gradients {data-background-color=var(--quarto-scss-export-blue)}
+
+## Computing gradients
+
+
+
+Solution vector $\B u$ depends on a vector of parameters $\B p$ of size $M$ and defined implicitly through an operator $\B F$ as:
+$$
+\B F(\B u, \B p) = \B 0
+$$ {#eq-genimpeq}
+
+$\B G$ is a functional of interest of dimension $N$, representing the quantity to be optimized
+
+
+::: {.fragment}
+### Finite differences
+$$
+\frac{\mathrm{d}\B G}{\mathrm{d}p_i} \approx \frac{\B G(\B p + h \B e_i) - \B G(\B p)}{h}
+$$
+where $\B e_i$ is the vector with $0$ in all entries except for $1$ in the $i^{th}$ entry.
+
+
+- numerical inaccuracy
+- expensive for large $M$ and/or $N$
+
+:::
+
+## Computing gradients
+### Tangent linear equation
+
+Explicitly, the gradient can be computed applying the chain rule:
+$$
+\frac{\mathrm{d}\B G}{\mathrm{d}\B p} =
+\frac{\partial \B G}{\partial \B p} +
+\frac{\partial \B G}{\partial \B u}
+\frac{\mathrm{d}\B u}{\mathrm{d}\B p}.
+$$ {#eq-gradG}
+Taking the total derivative of @{eq-genimpeq} we obtain the tangent linear equation:
+$$
+{\frac{\partial \B F(\B u, \B p)}{\partial \B u}}
+{\frac{\mathrm{d}\B u}{\mathrm{d}\B p}} =
+{-\frac{\partial \B F(\B u, \B p)}{\partial \B p}}.
+$$
+
+
+
+::: {.fragment}
+### Adjoint equation
+
+Assuming the tangent linear system is invertible, we can rewrite the Jacobian as:
+$$
+\frac{\mathrm{d}\B u}{\mathrm{d}\B p} = - \left(\frac{\partial \B F(\B u, \B p)}{\partial \B u}\right)^{-1}
+\frac{\partial \B F(\B u, \B p)}{\partial \B p}.
+$$
+After substituting this value in @eq-gradG and taking the adjoint (Hermitian transpose, denoted by $\dagger$) we get:
+$$
+	\frac{\mathrm{d}\B G}{\mathrm{d}\B p}^{\dagger} =
+	\frac{\partial \B G}{\partial \B p}^{\dagger}
+	- \frac{\partial \B F(\B u, \B p)}{\partial \B p}^{\dagger} \left(\frac{\partial \B F(\B u, \B p)}{\partial \B u}\right)^{-\dagger}
+	\frac{\partial \B G}{\partial \B u}^{\dagger} .
+$$
+:::
+
+## Computing gradients
+### Adjoint equation
+Defining the adjoint variable $\B \lambda$ as:
+$$
+\B \lambda = \left(\frac{\partial \B F(\B u, \B p)}{\partial \B u}\right)^{-\dagger}
+\frac{\partial \B G}{\partial \B u}^{\dagger}
+$$
+we obtain the adjoint equation
+$$
+	\left(\frac{\partial \B F(\B u, \B p)}{\partial \B u}\right)^{\dagger} \B \lambda = \frac{\partial \B G}{\partial \B u}^{\dagger}.
+$$
+
+
+
+## Automatic differentiation (AD)
+
+- A general way of taking
+a program which computes a value, and automatically constructing a
+procedure for computing derivatives of that value, accurately to working precision, and using at most a small constant factor more arithmetic operations than the original program [@griewankEvaluatingDerivatives2008]
+
+::: {.incremental}
+- Not finite differences / symbolic differentiation
+- Procedure:
+  1. Decompose original code into intrinsic functions (build computational graph)
+  2. Differentiate the intrinsic functions, effectively symbolically
+  3. Multiply together according to the chain rule
+   
+- Automation:
+  - Source code transformation
+  - Operator overloading
+:::
+
+## Automatic differentiation (AD)
+
+$f: \mathbb{R}^M \rightarrow \mathbb{R}^N$
+
+Example: $f(x_1,x_2) = x_1x_2 + \sin(x_1)$
+
+::: columns
+
+:::: {.column width=50% }
+
+
+Forward mode
+
+![](fig/forward.png)
+
+
+- more efficient if $N\gg M$
+
+::::
+
+:::: {.column width=50% }
+
+Reverse mode
+
+![](fig/reverse.png)
+
+- more efficient if $M \gg N$
+- need to store intermediate values
+
+::::
+
+:::
+
+
+# Finite Element Method  {data-background-image=https://gyptis.gitlab.io/_static/_assets/bg.svg data-background-color=black data-background-opacity=0.25}
+Open-source code
+
+## Finite Element Method
+
+### Implementation
+Open source libraries with bindings for the `python` programming language using a custom code `gyptis` [@gyptis042].
+
+- Geometry and mesh generation: `gmsh` [@geuzaineGmsh3DFinite2009]
+- FEM library: `fenics` using second order Lagrange basis functions [@alnaesFEniCSProjectVersion2015] 
+- Gradient calculations: `dolfin-adjoint` library with automatic differentiation [@mituschDolfinadjoint2018Automated2019] 
+
+
+
+
+## gyptis {.hide-title .title-slide .title-slide background-iframe="https://gyptis.gitlab.io"}
+
+
+## Finite Element Method
+### Application: Bi-focal lens  
+
+Objective: focal point at two different locations depending on the excitation frequency 
+[@vialOptimizationExperimentalValidation2022]
+$$
+     \max_{p(\B r)} \quad \Phi = \left|E_1(\omega_1,\B r_1)\right| + \left|E_2(\omega_2,\B r_2)\right|
+$$
+
+
+
+
+
+::: {.fragment}
+
+![](fig/bifoc/lens.png){.absolute bottom=0 left=34% width="222"}
+
+::: columns
+
+:::: {.column width=50% }
+
+##### Optimization history
+![](fig/bifoc/figure1.png)
+
+::::
+:::: {.column width=50% }
+
+![](fig/bifoc/figure2.png){.img width=80%}
+
+::::
+
+::::
+
+:::
+
+
+
+## Finite Element Method
+
+### Inverse design of superscatterers
+
+
+*Objective*: maximize the normalized scattering width [@vial2022]
+$$ 
+\max_{p(\B r)} \quad    \Phi = \sigma_s/2R
+$$
+
+
+::: {.fragment}
+::: columns
+
+:::: {.column width=50%}
+
+##### TE
+<video data-autoplay src="fig/animation_gyptis_TE.mp4" onloadeddata="this.playbackRate=3.0;"></video>
+
+::::
+
+:::: {.column width=50%}
+
+
+##### TM
+<video data-autoplay src="fig/animation_gyptis_TM.mp4" onloadeddata="this.playbackRate=3.0;"></video>
+
+::::
+
+:::
+
+:::
+
+
+
+
+## Finite Element Method
+
+### Inverse design of superscatterers
+::: columns
+
+:::: {.column width=50%}
+##### Spectra
+![](fig/figure1.png)
+::::
+
+:::: {.column width=50%}
+
+##### Quasi Normal Modes expansion
+![](fig/figure2.png)
+
+::::
+
+:::
+
+
+
+# Fourier Modal Method  {data-background-image=https://nannos.gitlab.io/_static/_assets/bg.svg data-background-color=black data-background-opacity=0.25}
+Open-source code
+
+
+
+## Fourier Modal Method (FMM)
+
+
+::: columns
+
+:::: {.column width=55% }
+
+- AKA Rigorous Coupled Wave Analysis (RCWA)
+- Suited for a specific type of periodic structure made up of stacked structured layers
+- *Key idea*: expand the electromagnetic
+fields within each layer into eigenmodes represented using a Fourier basis in the plane of periodicity [@lalanne1996;@granet1996;@whittakerScatteringmatrixTreatmentPatterned1999;@liuS4FreeElectromagnetic2012]
+
+
+::: {.fragment}
+### Implementation
+
+FMM and PWEM in `python` with various numerical backends for core linear algebra operations and array manipulation
+
+- `numpy` [@harris2020array] 
+- `scipy` [@2020SciPy-NMeth]
+- `autograd` (AD) [@maclaurin2015autograd]
+- `pytorch` (AD + GPU) [@NEURIPS2019_9015;@paszke2017automatic]
+- `jax` (AD + GPU) [@jax2018github] 
+
+:::
+
+::::
+
+:::: {.column width=45% }
+
+![](fig/metasurface_nannos.png)
+ 
+
+::::
+:::
+
+
+## nannos {.hide-title .title-slide background-iframe="https://nannos.gitlab.io"}
+
+
+## FMM benchmark
+
+::: columns
+
+:::: {.column width=50% }
+
+![](fig/speedup1.png)
+
+::::
+
+:::: {.column width=50% }
+
+![](fig/speedup16.png)
+
+::::
+
+:::
+
+
+
+## Application: metasurface
+
+*Objective*: maximize the average of the transmission coefficient in the $(1,0)$ diffracted order for both polarizations:
+$$
+		\max_{p(\B r)} \quad    \Phi = \frac{1}{2} \left( T^{\rm TE}_{(1,0)} + T^{\rm TM}_{(1,0)}\right)
+$$
+
+
+::: {.fragment}
+
+<video data-autoplay src="fig/animation_nannos.mp4" style="width: 150%;" onloadeddata="this.playbackRate=6.0;"></video>
+
+
+:::
+
+
+## Application: metasurface
+![](fig/figure4.png){.img width=100%}
+
+
+## Optimized metasurface {.hide-title data-background-color=black data-background-image="fig/metasurface.png"}
+
+
+
+
+# Plane Wave Expansion Method  {data-background-image=https://protis.gitlab.io/_static/_assets/bg.svg data-background-color=black data-background-opacity=0.25}
+Open-source code
+
+
+## Plane Wave Expansion Method
+
+- 2D, possibly $z$-anisotropic materials in $\varepsilon$ and $\mu$, non dispersive
+- Polarization decouple, expand the $z$ components as:
+$$
+u(\B{r})=\sum_{\B {G}} u_{\B {G}}\, {\rm e}^{i(\B {k}+\B {G}) \cdot \B{r}},
+\label{eq:pwem1}
+$$
+- After Fourier transforming Maxwell's equations and recombining
+the relevant $z$ component of the fields, we get the following generalized eigenproblem:
+$$
+\mathcal{Q}^{\rm T} \,\hat{\tens{\theta}_\parallel}^{-1}\,\mathcal{Q}\, \Phi = k_0^2 \,\chi_{zz}\, \Phi
+$$ {#eq-pwem2}
+$\tens{\theta}_\parallel=\tens{\mu}_\parallel$ for TM and $\tens{\varepsilon}_\parallel$ for TE polarization, $\mathcal{Q} =  \left[\hat{k}_{y}, -\hat{k}_{x}\right]^{\rm T}$ and
+$\Phi=\left[u_{\B{G}_{1}}, u_{\B{G}_{2}}, \ldots\right]^{\rm T}$
+- Reduced Bloch Mode Expansion [@husseinReducedBlochMode2009], only solving @eq-pwem2 at symmetry points of the first Brillouin zone and performing a second expansion using those modes as a basis set.
+
+
+
+## protis {.title-slide .hide-title background-iframe="https://protis.gitlab.io"}
+
+
+## Photonic crystals: maximizing bandgaps
+
+::: columns
+
+:::: {.column width=50% }
+- TE modes, square array with enforced $C_4$ symmetry on the unit cell, $\varepsilon_{\rm min}=1$ (air) and $\varepsilon_{\rm max}=9$
+
+Objective: open and maximize a bandgap between the $5^{th}$ and $6^{th}$ eigenvalues:\begin{equation*}\max_{p(\B r)} \quad    \Phi = \min_{\B k} \omega_{6}(\B k) - \max_{\B k} \omega_{5}(\B k)\end{equation*}
+
+- Final distribution in agreement with simple geometrical rules: the walls of an optimal centroidal Voronoi tessellation with $n=5$ points [@sigmundGeometricPropertiesOptimal2008]
+
+::::
+
+:::: {.column width=50% }
+
+<video data-autoplay src="fig/animation_protis_bandgap_TE.mp4"></video>
+
+::::
+
+:::
+
+
+
+
+## Photonic crystals: dispersion engineering
+
+
+::: columns
+
+:::: {.column width=50% }
+
+
+- TM modes, symmetry with respect to $y$
+
+*Objective*: obtain a prescribed dispersion curve for the $6^{th}$ band \begin{equation*}\min_{p(\B r)} \quad \Phi =  \left\langle\left|\omega_{6}(k_x) - \langle \omega_{6}\rangle - \omega_{\rm tar}(k_x) \right|^2\right\rangle \end{equation*}
+with \begin{align*}\omega_{\rm tar}(k_x) =& -0.02 \cos(k_x  a) + 0.01 \cos(2  k_x a) \\ &+ 0.007 \cos(3  k_x  a)\end{align*}
+$\langle f\rangle =\frac{1}{M}\sum_{m=0}^M f_m$
+
+
+::::
+
+:::: {.column width=50% }
+
+<video data-autoplay src="fig/animation_protis_dispersion_TM.mp4"></video>
+
+::::
+
+:::
+
+
+# Open source {data-background-color=var(--quarto-scss-export-purple)}
+
+## Open source
+
+::: columns
+
+:::: {.column width=50% }
+
+- Free software: low cost, portable, customizable, vendor-independent
+- Widely used programming language, is easily installable and integrates with the rich and growing scientific Python ecosystem
+- Reproducible and collaborative research
+- Auto-differentiation: inverse design of photonic structures and metamaterials with improved performances and  explore intriguing effects
+
+
+::::
+
+:::: {.column width=50% }
+
+<iframe src="projects_stats.html" style="width:600px;height:600px;"></iframe>
+
+::::
+
+:::
+
+
+
+## Get the code
+
+- Development on gitlab: continuous integration for testing and documentation deployment
+- Install / fork it / run it online / report bugs!
+
+::: columns
+
+:::: {.column width=50% }
+
+FEM
+```bash
+pip install gyptis
+```
+```bash
+conda install -c conda-forge gyptis
+```
+FMM
+```bash
+pip install nannos
+```
+```bash
+conda install -c conda-forge nannos
+```
+PWEM
+```bash
+pip install protis
+```
+
+::::
+
+:::: {.column width=50% }
+
+![[gyptis.gitlab.io](https://gyptis.gitlab.io)](fig/gyptis-name.png){.img width=33%}
+
+![[nannos.gitlab.io](https://nannos.gitlab.io)](fig/nannos-name.png){.img width=33%}
+
+![[protis.gitlab.io](https://protis.gitlab.io)](fig/protis-name.png){.img width=33%}
+
+
+
+::::
+
+:::
+
+
+## Freeware list
+
+[https://github.com/joamatab/awesome_photonics](https://github.com/joamatab/awesome_photonics)
+
+<iframe src="https://bvial.info/awesome_photonics/" style="width:100%;height:100%;"></iframe>
+
+
+
+
+
+# Thank you! {data-background-color=var(--quarto-scss-export-primary-color)}
+
+
+# Appendix {data-background-color=var(--quarto-scss-export-secondary-color)}
+## Bibliography
+
+::: {#refs}
+:::

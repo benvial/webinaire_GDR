@@ -3,6 +3,8 @@
 
 My presentation slides for the [GDR Ondes](https://gdr-ondes.cnrs.fr/) seminar series on open-source software.
 
+Published online at [https://bvial.info/webinaire_GDR](https://bvial.info/webinaire_GDR).
+
 
 ## Abstract
 

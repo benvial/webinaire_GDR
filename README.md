@@ -1,7 +1,7 @@
 
 
 
-Slides for the [GDR Ondes](https://gdr-ondes.cnrs.fr/) seminar series on open-source software.
+My presentation slides for the [GDR Ondes](https://gdr-ondes.cnrs.fr/) seminar series on open-source software.
 
 
 ## Abstract

@@ -1,0 +1,226 @@
+[
+  {
+    "objectID": "index.html#introduction-1",
+    "href": "index.html#introduction-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Introduction",
+    "text": "Introduction\n\n\\[\n\\usepackage{amsmath,amssymb}\n\\newcommand{\\e}{\\varepsilon}\n\\newcommand{\\exx}{\\e_{xx}}\n\\newcommand{\\eyy}{\\e_{yy}}\n\\newcommand{\\ea}{\\e_{a}}\n\\newcommand{\\ezz}{\\e_{zz}}\n\\newcommand{\\exy}{\\e_{xy}}\n\\newcommand{\\eyx}{\\e_{yx}}\n\\newcommand{\\muxx}{\\mu_{xx}}\n\\newcommand{\\muyy}{\\mu_{yy}}\n\\newcommand{\\mua}{\\mu_{a}}\n\\newcommand{\\muzz}{\\mu_{zz}}\n\\newcommand{\\ef}{\\e_{\\rm f}}\n\\newcommand{\\ed}{\\e_{\\rm d}}\n\\newcommand{\\tdf}{\\tan \\delta_{\\rm f}}\n\\newcommand{\\td}{\\tan \\delta}\n\\newcommand{\\Eb}{E_{\\rm B}}\n\\newcommand{\\Em}{\\B{\\mathcal{E}}}\n\\newcommand{\\Hm}{{\\mathcal{H}}}\n\\usepackage{bm}\n\\newcommand{\\B}[1]{\\boldsymbol{#1}}\n\\newcommand{\\tens}[1]{\\B{#1}}\n\\newcommand{\\re}{\\mathrm{Re}\\,}\n\\newcommand{\\im}{\\mathrm{Im}\\,}\n\\newcommand{\\grad}{\\B{\\nabla}}\n\\newcommand{\\ddiv}{\\B{\\nabla}\\cdotp}\n\\newcommand{\\curl}{\\B{\\nabla}\\times}\n\\newcommand{\\dt}{\\mathrm{d}}\n\\newcommand{\\etens}{\\tens{\\e}}\n\\newcommand{\\h}[1]{\\tilde{#1}}\n\\newcommand{\\T}[1]{#1^{\\rm T}}\n\\newcommand{\\lp}{\\left(}\n\\newcommand{\\rp}{\\right)}\n\\newcommand{\\bra}{\\left\\langle}\n\\newcommand{\\ket}{\\right\\rangle}\n\\newcommand{\\mn}[1]{\\bra #1 \\ket}\n\\newcommand{\\D}{\\partial}\n\\newcommand{\\dd}{\\rm d}\n\\newcommand{\\der}[2]{\\frac{\\D #1}{\\D #2}}\n\\newcommand{\\rhof}{\\tilde{\\rho}}\n\\newcommand{\\rhop}{\\hat{\\rho}}\n\\newcommand{\\matthree}[9]{\n\\begin{pmatrix}\n#1 & #2 & #3\\\\\n#4 & #5 & #6\\\\\n#7 & #8 & #9\n\\end{pmatrix}\n}\n\\newcommand{\\ehom}{\\tilde{\\etens}}\n\\newcommand{\\ezaniso}{\\matthree{\\exx}{\\ea^\\star}{0}{\\ea}{\\eyy}{0}{0}{0}{\\ezz}}\n\\newcommand{\\muzaniso}{\\matthree{\\muxx}{\\mua^\\star}{0}{\\mua}{\\muyy}{0}{0}{0}{\\muzz}}\n\\newcommand{\\LSO}{L^2({{\\rm\\textbf{curl}}}, \\Omega)}\n\\newcommand{\\rpara}{\\B{r_\\parallel}}\n\\newcommand{\\densf}{\\tilde{p}}\n\\newcommand{\\densp}{\\hat{p}}\n\\newcommand{\\exxh}{\\h{\\e}_{xx}}\n\\newcommand{\\eyyh}{\\h{\\e}_{yy}}\n\\newcommand{\\exyh}{\\h{\\e}_{xy}}\n\\newcommand{\\eyxh}{\\h{\\e}_{yx}}\n\\newcommand{\\ezzh}{\\h{\\e}_{zz}}\n\\newcommand{\\tdhxx}{\\tan \\h{\\delta}_{xx}}\n\\newcommand{\\tunh}{\\h{\\eta}}\n\\]\n\nWhat is topology optimization?\n\n\nA mathematical method that optimizes material layout within a given design space, for a given set of sources, boundary conditions and constraints with the goal of maximizing the performance of the system"
+  },
+  {
+    "objectID": "index.html#section",
+    "href": "index.html#section",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "",
+    "text": "Topology optimization Hello World!: Maximizing a beam stiffness with fixed volume fraction (Bleyer 2018)"
+  },
+  {
+    "objectID": "index.html#section-1",
+    "href": "index.html#section-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "",
+    "text": "Structural Engineering\n\n\nQatar National Convention Centre"
+  },
+  {
+    "objectID": "index.html#section-2",
+    "href": "index.html#section-2",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "",
+    "text": "Aeronautics\n\n\nAirplane wing (Aage et al. 2017)"
+  },
+  {
+    "objectID": "index.html#section-3",
+    "href": "index.html#section-3",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "",
+    "text": "Photonics\n\n(Molesky et al. 2018)"
+  },
+  {
+    "objectID": "index.html#topology-optimization-recipes",
+    "href": "index.html#topology-optimization-recipes",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Topology optimization: recipes",
+    "text": "Topology optimization: recipes\n\n\n\nDensity function\n\n\\(p \\in [0,1]\\): material distribution in design domain \\(\\Omega_{\\rm des}\\)\n\nFiltering\n\nConvolution: \\(f(\\B r) = \\frac{1}{A}{\\rm exp}(-|\\B r|^2 /R_f^2)\\), with \\(\\int_{\\Omega_{\\rm des}} f(\\B r) =1\\) \\[\\begin{equation*}\n\\densf(\\B r)  = p * f = \\int_{\\Omega_{\\rm des}} p(\\B r') f(\\B r -\\B r') {\\rm d} \\B r'\n\\label{eq:gaussian_filt}\n\\end{equation*}\\] PDE: \\(-R_f^2 \\B\\nabla ^2 \\densf + \\densf = p {\\quad\\rm on \\,}\\Omega_{\\rm des}, \\grad\\densf\\cdotp\\B n = 0 {\\quad\\rm on \\,}\\partial\\Omega_{\\rm des}\\) (Lazarov et al. 2011)"
+  },
+  {
+    "objectID": "index.html#topology-optimization-recipes-1",
+    "href": "index.html#topology-optimization-recipes-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Topology optimization: recipes",
+    "text": "Topology optimization: recipes\n\n\n\nProjection\n\n\\[\\densp(\\densf) = \\frac{\\tanh\\left[\\beta\\nu\\right] + \\tanh\\left[\\beta(\\densf-\\nu)\\right] }{\\tanh\\left[\\beta\\nu\\right]\n+ \\tanh\\left[\\beta(1-\\nu)\\right]}\\] with \\(\\nu=1/2\\) and \\(\\beta&gt;0\\) increased during the course of the optimization. (Wang et al. 2010) \n\nInterpolation\n\n\\(\\varepsilon(\\densp)=(\\varepsilon_{\\rm max}-\\varepsilon_{\\rm min})\\,\\densp^m + \\varepsilon_{\\rm min}\\) (Bendsøe et al. 1999)"
+  },
+  {
+    "objectID": "index.html#algorithm",
+    "href": "index.html#algorithm",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Algorithm",
+    "text": "Algorithm\n\n\n\n\n\n\ngradient based optimization algorithm\n\nmethod of moving asymptotes (Svanberg 2002), free implementation via the nlopt package (Johnson 2007)\n40 iterations or until convergence on the objective or design variables\nrepeated setting \\(\\beta =2^n\\), where \\(n\\) is an integer between 0 and 7, restarting the algorithm with the optimized density obtained at the previous step"
+  },
+  {
+    "objectID": "index.html#computing-gradients-1",
+    "href": "index.html#computing-gradients-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Computing gradients",
+    "text": "Computing gradients\nSolution vector \\(\\B u\\) depends on a vector of parameters \\(\\B p\\) of size \\(M\\) and defined implicitly through an operator \\(\\B F\\) as: \\[\n\\B F(\\B u, \\B p) = \\B 0\n\\qquad(1)\\]\n\\(\\B G\\) is a functional of interest of dimension \\(N\\), representing the quantity to be optimized\n\nFinite differences\n\\[\n\\frac{\\mathrm{d}\\B G}{\\mathrm{d}p_i} \\approx \\frac{\\B G(\\B p + h \\B e_i) - \\B G(\\B p)}{h}\n\\] where \\(\\B e_i\\) is the vector with \\(0\\) in all entries except for \\(1\\) in the \\(i^{th}\\) entry.\n\nnumerical inaccuracy\nexpensive for large \\(M\\) and/or \\(N\\)"
+  },
+  {
+    "objectID": "index.html#computing-gradients-2",
+    "href": "index.html#computing-gradients-2",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Computing gradients",
+    "text": "Computing gradients\nTangent linear equation\nExplicitly, the gradient can be computed applying the chain rule: \\[\n\\frac{\\mathrm{d}\\B G}{\\mathrm{d}\\B p} =\n\\frac{\\partial \\B G}{\\partial \\B p} +\n\\frac{\\partial \\B G}{\\partial \\B u}\n\\frac{\\mathrm{d}\\B u}{\\mathrm{d}\\B p}.\n\\qquad(2)\\] Taking the total derivative of Equation 1 we obtain the tangent linear equation: \\[\n{\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B u}}\n{\\frac{\\mathrm{d}\\B u}{\\mathrm{d}\\B p}} =\n{-\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B p}}.\n\\]\n\nAdjoint equation\nAssuming the tangent linear system is invertible, we can rewrite the Jacobian as: \\[\n\\frac{\\mathrm{d}\\B u}{\\mathrm{d}\\B p} = - \\left(\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B u}\\right)^{-1}\n\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B p}.\n\\] After substituting this value in Equation 2 and taking the adjoint (Hermitian transpose, denoted by \\(\\dagger\\)) we get: \\[\n    \\frac{\\mathrm{d}\\B G}{\\mathrm{d}\\B p}^{\\dagger} =\n    \\frac{\\partial \\B G}{\\partial \\B p}^{\\dagger}\n    - \\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B p}^{\\dagger} \\left(\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B u}\\right)^{-\\dagger}\n    \\frac{\\partial \\B G}{\\partial \\B u}^{\\dagger} .\n\\]"
+  },
+  {
+    "objectID": "index.html#computing-gradients-3",
+    "href": "index.html#computing-gradients-3",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Computing gradients",
+    "text": "Computing gradients\nAdjoint equation\nDefining the adjoint variable \\(\\B \\lambda\\) as: \\[\n\\B \\lambda = \\left(\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B u}\\right)^{-\\dagger}\n\\frac{\\partial \\B G}{\\partial \\B u}^{\\dagger}\n\\] we obtain the adjoint equation \\[\n    \\left(\\frac{\\partial \\B F(\\B u, \\B p)}{\\partial \\B u}\\right)^{\\dagger} \\B \\lambda = \\frac{\\partial \\B G}{\\partial \\B u}^{\\dagger}.\n\\]"
+  },
+  {
+    "objectID": "index.html#automatic-differentiation-ad",
+    "href": "index.html#automatic-differentiation-ad",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Automatic differentiation (AD)",
+    "text": "Automatic differentiation (AD)\n\nA general way of taking a program which computes a value, and automatically constructing a procedure for computing derivatives of that value, accurately to working precision, and using at most a small constant factor more arithmetic operations than the original program (Griewank et al. 2008)\n\n\n\nNot finite differences / symbolic differentiation\nProcedure:\n\nDecompose original code into intrinsic functions (build computational graph)\nDifferentiate the intrinsic functions, effectively symbolically\nMultiply together according to the chain rule\n\nAutomation:\n\nSource code transformation\nOperator overloading"
+  },
+  {
+    "objectID": "index.html#automatic-differentiation-ad-1",
+    "href": "index.html#automatic-differentiation-ad-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Automatic differentiation (AD)",
+    "text": "Automatic differentiation (AD)\n\\(f: \\mathbb{R}^M \\rightarrow \\mathbb{R}^N\\)\nExample: \\(f(x_1,x_2) = x_1x_2 + \\sin(x_1)\\)\n\n\nForward mode\n\n\nmore efficient if \\(N\\gg M\\)\n\n\nReverse mode\n\n\nmore efficient if \\(M \\gg N\\)\nneed to store intermediate values"
+  },
+  {
+    "objectID": "index.html#finite-element-method-1",
+    "href": "index.html#finite-element-method-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Finite Element Method",
+    "text": "Finite Element Method\nImplementation\nOpen source libraries with bindings for the python programming language using a custom code gyptis (Vial 2022).\n\nGeometry and mesh generation: gmsh (Geuzaine et al. 2009)\nFEM library: fenics using second order Lagrange basis functions (Alnæs et al. 2015)\nGradient calculations: dolfin-adjoint library with automatic differentiation (Mitusch et al. 2019)"
+  },
+  {
+    "objectID": "index.html#gyptis",
+    "href": "index.html#gyptis",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "gyptis",
+    "text": "gyptis"
+  },
+  {
+    "objectID": "index.html#finite-element-method-2",
+    "href": "index.html#finite-element-method-2",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Finite Element Method",
+    "text": "Finite Element Method\nApplication: Bi-focal lens\nObjective: focal point at two different locations depending on the excitation frequency (Vial, Whittaker, et al. 2022) \\[\n     \\max_{p(\\B r)} \\quad \\Phi = \\left|E_1(\\omega_1,\\B r_1)\\right| + \\left|E_2(\\omega_2,\\B r_2)\\right|\n\\]\n\n\n\n\nOptimization history"
+  },
+  {
+    "objectID": "index.html#finite-element-method-3",
+    "href": "index.html#finite-element-method-3",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Finite Element Method",
+    "text": "Finite Element Method\nInverse design of superscatterers\nObjective: maximize the normalized scattering width (Vial and Hao 2022) \\[\n\\max_{p(\\B r)} \\quad    \\Phi = \\sigma_s/2R\n\\]\n\n\n\nTE\n\n\n\nTM"
+  },
+  {
+    "objectID": "index.html#finite-element-method-4",
+    "href": "index.html#finite-element-method-4",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Finite Element Method",
+    "text": "Finite Element Method\nInverse design of superscatterers\n\n\nSpectra\n\n\nQuasi Normal Modes expansion"
+  },
+  {
+    "objectID": "index.html#fourier-modal-method-fmm",
+    "href": "index.html#fourier-modal-method-fmm",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Fourier Modal Method (FMM)",
+    "text": "Fourier Modal Method (FMM)\n\n\n\nAKA Rigorous Coupled Wave Analysis (RCWA)\nSuited for a specific type of periodic structure made up of stacked structured layers\nKey idea: expand the electromagnetic fields within each layer into eigenmodes represented using a Fourier basis in the plane of periodicity (Lalanne et al. 1996; Granet et al. 1996; Whittaker et al. 1999; Liu et al. 2012)\n\n\nImplementation\nFMM and PWEM in python with various numerical backends for core linear algebra operations and array manipulation\n\nnumpy (Harris et al. 2020)\nscipy (Virtanen et al. 2020)\nautograd (AD) (Maclaurin et al. 2015)\npytorch (AD + GPU) (Paszke et al. 2019, 2017)\njax (AD + GPU) (Bradbury et al. 2018)"
+  },
+  {
+    "objectID": "index.html#nannos",
+    "href": "index.html#nannos",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "nannos",
+    "text": "nannos"
+  },
+  {
+    "objectID": "index.html#fmm-benchmark",
+    "href": "index.html#fmm-benchmark",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "FMM benchmark",
+    "text": "FMM benchmark"
+  },
+  {
+    "objectID": "index.html#application-metasurface",
+    "href": "index.html#application-metasurface",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Application: metasurface",
+    "text": "Application: metasurface\nObjective: maximize the average of the transmission coefficient in the \\((1,0)\\) diffracted order for both polarizations: \\[\n        \\max_{p(\\B r)} \\quad    \\Phi = \\frac{1}{2} \\left( T^{\\rm TE}_{(1,0)} + T^{\\rm TM}_{(1,0)}\\right)\n\\]"
+  },
+  {
+    "objectID": "index.html#application-metasurface-1",
+    "href": "index.html#application-metasurface-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Application: metasurface",
+    "text": "Application: metasurface"
+  },
+  {
+    "objectID": "index.html#optimized-metasurface",
+    "href": "index.html#optimized-metasurface",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Optimized metasurface",
+    "text": "Optimized metasurface"
+  },
+  {
+    "objectID": "index.html#plane-wave-expansion-method-1",
+    "href": "index.html#plane-wave-expansion-method-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Plane Wave Expansion Method",
+    "text": "Plane Wave Expansion Method\n\n2D, possibly \\(z\\)-anisotropic materials in \\(\\varepsilon\\) and \\(\\mu\\), non dispersive\nPolarization decouple, expand the \\(z\\) components as: \\[\nu(\\B{r})=\\sum_{\\B {G}} u_{\\B {G}}\\, {\\rm e}^{i(\\B {k}+\\B {G}) \\cdot \\B{r}},\n\\label{eq:pwem1}\n\\]\nAfter Fourier transforming Maxwell’s equations and recombining the relevant \\(z\\) component of the fields, we get the following generalized eigenproblem: \\[\n\\mathcal{Q}^{\\rm T} \\,\\hat{\\tens{\\theta}_\\parallel}^{-1}\\,\\mathcal{Q}\\, \\Phi = k_0^2 \\,\\chi_{zz}\\, \\Phi\n\\qquad(3)\\] \\(\\tens{\\theta}_\\parallel=\\tens{\\mu}_\\parallel\\) for TM and \\(\\tens{\\varepsilon}_\\parallel\\) for TE polarization, \\(\\mathcal{Q} =  \\left[\\hat{k}_{y}, -\\hat{k}_{x}\\right]^{\\rm T}\\) and \\(\\Phi=\\left[u_{\\B{G}_{1}}, u_{\\B{G}_{2}}, \\ldots\\right]^{\\rm T}\\)\nReduced Bloch Mode Expansion (Hussein 2009), only solving Equation 3 at symmetry points of the first Brillouin zone and performing a second expansion using those modes as a basis set."
+  },
+  {
+    "objectID": "index.html#protis",
+    "href": "index.html#protis",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "protis",
+    "text": "protis"
+  },
+  {
+    "objectID": "index.html#photonic-crystals-maximizing-bandgaps",
+    "href": "index.html#photonic-crystals-maximizing-bandgaps",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Photonic crystals: maximizing bandgaps",
+    "text": "Photonic crystals: maximizing bandgaps\n\n\n\nTE modes, square array with enforced \\(C_4\\) symmetry on the unit cell, \\(\\varepsilon_{\\rm min}=1\\) (air) and \\(\\varepsilon_{\\rm max}=9\\)\n\nObjective: open and maximize a bandgap between the \\(5^{th}\\) and \\(6^{th}\\) eigenvalues:\\[\\begin{equation*}\\max_{p(\\B r)} \\quad    \\Phi = \\min_{\\B k} \\omega_{6}(\\B k) - \\max_{\\B k} \\omega_{5}(\\B k)\\end{equation*}\\]\n\nFinal distribution in agreement with simple geometrical rules: the walls of an optimal centroidal Voronoi tessellation with \\(n=5\\) points (Sigmund et al. 2008)"
+  },
+  {
+    "objectID": "index.html#photonic-crystals-dispersion-engineering",
+    "href": "index.html#photonic-crystals-dispersion-engineering",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Photonic crystals: dispersion engineering",
+    "text": "Photonic crystals: dispersion engineering\n\n\n\nTM modes, symmetry with respect to \\(y\\)\n\nObjective: obtain a prescribed dispersion curve for the \\(6^{th}\\) band \\[\\begin{equation*}\\min_{p(\\B r)} \\quad \\Phi =  \\left\\langle\\left|\\omega_{6}(k_x) - \\langle \\omega_{6}\\rangle - \\omega_{\\rm tar}(k_x) \\right|^2\\right\\rangle \\end{equation*}\\] with \\[\\begin{align*}\\omega_{\\rm tar}(k_x) =& -0.02 \\cos(k_x  a) + 0.01 \\cos(2  k_x a) \\\\ &+ 0.007 \\cos(3  k_x  a)\\end{align*}\\] \\(\\langle f\\rangle =\\frac{1}{M}\\sum_{m=0}^M f_m\\)"
+  },
+  {
+    "objectID": "index.html#open-source-1",
+    "href": "index.html#open-source-1",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Open source",
+    "text": "Open source\n\n\n\nFree software: low cost, portable, customizable, vendor-independent\nWidely used programming language, is easily installable and integrates with the rich and growing scientific Python ecosystem\nReproducible and collaborative research\nAuto-differentiation: inverse design of photonic structures and metamaterials with improved performances and explore intriguing effects"
+  },
+  {
+    "objectID": "index.html#get-the-code",
+    "href": "index.html#get-the-code",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Get the code",
+    "text": "Get the code\n\nDevelopment on gitlab: continuous integration for testing and documentation deployment\nInstall / fork it / run it online / report bugs!\n\n\n\nFEM\npip install gyptis\nconda install -c conda-forge gyptis\nFMM\npip install nannos\nconda install -c conda-forge nannos\nPWEM\npip install protis\n\n\n\n\ngyptis.gitlab.io\n\n\n\n\n\nnannos.gitlab.io\n\n\n\n\n\nprotis.gitlab.io"
+  },
+  {
+    "objectID": "index.html#freeware-list",
+    "href": "index.html#freeware-list",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Freeware list",
+    "text": "Freeware list\nhttps://github.com/joamatab/awesome_photonics"
+  },
+  {
+    "objectID": "index.html#bibliography",
+    "href": "index.html#bibliography",
+    "title": "Optimization of Photonic Devices: Implementation of Auto-Differentiable Numerical Methods in Open-Source Software",
+    "section": "Bibliography",
+    "text": "Bibliography\n\n\nAage, Niels, Erik Andreassen, Boyan S. Lazarov, and Ole Sigmund. 2017. “Giga-Voxel Computational Morphogenesis for Structural Design.” Nature 550 (7674): 84–86. https://doi.org/10.1038/nature23911.\n\n\nAlnæs, Martin, Jan Blechta, Johan Hake, August Johansson, Benjamin Kehlet, Anders Logg, Chris Richardson, Johannes Ring, Marie E. Rognes, and Garth N. Wells. 2015. “The FEniCS Project Version 1.5.” Archive of Numerical Software 3 (100). https://doi.org/10.11588/ans.2015.100.20553.\n\n\nBendsøe, M. P., and O. Sigmund. 1999. “Material Interpolation Schemes in Topology Optimization.” Arch. Appl. Mech. Ing. Arch. 69 (9-10): 635–54. https://doi.org/10.1007/s004190050248.\n\n\nBleyer, Jeremy. 2018. Numerical Tours of Computational Mechanics with FEniCS. Manual. Zenodo. https://doi.org/10.5281/zenodo.1287832.\n\n\nBradbury, James, Roy Frostig, Peter Hawkins, Matthew James Johnson, Chris Leary, Dougal Maclaurin, George Necula, et al. 2018. “JAX: Composable Transformations of Python+NumPy Programs.”\n\n\nGeuzaine, Christophe, and Jean-François Remacle. 2009. “Gmsh: A 3-D Finite Element Mesh Generator with Built-in Pre- and Post-Processing Facilities.” Int J Numer Meth Engng 79 (11): 1309–31. https://doi.org/10.1002/nme.2579.\n\n\nGranet, G., and B. Guizal. 1996. “Efficient Implementation of the Coupled-Wave Method for Metallic Lamellar Gratings in TM Polarization.” JOSA A 13 (5): 1019–23. https://doi.org/10.1364/JOSAA.13.001019.\n\n\nGriewank, Andreas, and Andrea Walther. 2008. Evaluating Derivatives. Other Titles in Applied Mathematics. Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898717761.\n\n\nHarris, Charles R., K. Jarrod Millman, Stéfan J. van der Walt, Ralf Gommers, Pauli Virtanen, David Cournapeau, Eric Wieser, et al. 2020. “Array Programming with NumPy.” Nature 585 (7825): 357–62. https://doi.org/10.1038/s41586-020-2649-2.\n\n\nHussein, Mahmoud I. 2009. “Reduced Bloch Mode Expansion for Periodic Media Band Structure Calculations.” Proceedings of the Royal Society A: Mathematical, Physical and Engineering Sciences 465 (2109): 2825–48. https://doi.org/10.1098/rspa.2008.0471.\n\n\nJohnson, Steven G. 2007. “The NLopt Nonlinear-Optimization Package.” https://github.com/stevengj/nlopt.\n\n\nLalanne, Philippe, and G. Michael Morris. 1996. “Highly Improved Convergence of the Coupled-Wave Method for TM Polarization.” Journal of the Optical Society of America A 13 (4): 779–84.\n\n\nLazarov, B. S., and O. Sigmund. 2011. “Filters in Topology Optimization Based on Helmholtz-type Differential Equations.” International Journal for Numerical Methods in Engineering 86 (6): 765–81. https://doi.org/10.1002/nme.3072.\n\n\nLiu, Victor, and Shanhui Fan. 2012. “S4 : A Free Electromagnetic Solver for Layered Periodic Structures.” Computer Physics Communications 183 (10): 2233–44. https://doi.org/10.1016/j.cpc.2012.04.026.\n\n\nMaclaurin, Dougal, David Duvenaud, and Ryan P Adams. 2015. “Autograd: Effortless Gradients in Numpy.” In ICML 2015 AutoML Workshop, 238:5.\n\n\nMitusch, Sebastian K., Simon W. Funke, and Jørgen S. Dokken. 2019. “Dolfin-Adjoint 2018.1: Automated Adjoints for FEniCS and Firedrake.” Journal of Open Source Software 4 (38): 1292. https://doi.org/10.21105/joss.01292.\n\n\nMolesky, Sean, Zin Lin, Alexander Y. Piggott, Weiliang Jin, Jelena Vucković, and Alejandro W. Rodriguez. 2018. “Inverse Design in Nanophotonics.” Nature Photonics 12 (11): 659–70. https://doi.org/10.1038/s41566-018-0246-9.\n\n\nPaszke, Adam, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. 2017. “Automatic Differentiation in PyTorch.” In NIPS-W.\n\n\nPaszke, Adam, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, et al. 2019. “PyTorch: An Imperative Style, High-Performance Deep Learning Library.” In Advances in Neural Information Processing Systems 32, edited by H. Wallach, H. Larochelle, A. Beygelzimer, F. dAlché-Buc, E. Fox, and R. Garnett, 8024–35. Curran Associates, Inc.\n\n\nSigmund, Ole, and Kristian Hougaard. 2008. “Geometric Properties of Optimal Photonic Crystals.” Physical Review Letters 100 (15): 153904. https://doi.org/10.1103/PhysRevLett.100.153904.\n\n\nSvanberg, Krister. 2002. “A Class of Globally Convergent Optimization Methods Based on Conservative Convex Separable Approximations.” SIAM Journal on Optimization 12 (2): 555–73. https://doi.org/10.1137/S1052623499362822.\n\n\nVial, Benjamin. 2022. “Gyptis.” Zenodo. https://doi.org/10.5281/zenodo.6636134.\n\n\nVial, Benjamin, and Yang Hao. 2022. “Open-Source Computational Photonics with Auto Differentiable Topology Optimization.” Mathematics 10 (20): 3912. https://doi.org/10.3390/math10203912.\n\n\nVial, Benjamin, Tom Whittaker, Shiyu Zhang, William G. Whittow, and Yang Hao. 2022. “Optimization and Experimental Validation of a Bi-Focal Lens in the Microwave Domain.” AIP Advances 12 (2): 025103. https://doi.org/10.1063/5.0074062.\n\n\nVirtanen, Pauli, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, et al. 2020. “SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python.” Nature Methods 17: 261–72. https://doi.org/10.1038/s41592-019-0686-2.\n\n\nWang, Fengwen, Boyan Stefanov Lazarov, and Ole Sigmund. 2010. “On Projection Methods, Convergence and Robust Formulations in Topology Optimization.” Struct Multidisc Optim 43 (6): 767–84. https://doi.org/10.1007/s00158-010-0602-y.\n\n\nWhittaker, D. M., and I. S. Culshaw. 1999. “Scattering-Matrix Treatment of Patterned Multilayer Photonic Structures.” Physical Review B 60 (4): 2610–18. https://doi.org/10.1103/PhysRevB.60.2610."
+  }
+]

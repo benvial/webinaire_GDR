@@ -16,6 +16,8 @@ title-slide-attributes:
   data-background-image: "fig/bg.svg"
 bibliography: references.bib
 css: ["custom.css"]
+resources:
+  - fig/
 ---
 
 # Introduction {data-background-color=var(--quarto-scss-export-green)}
